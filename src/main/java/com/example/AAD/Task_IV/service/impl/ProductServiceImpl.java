@@ -2,6 +2,7 @@ package com.example.AAD.Task_IV.service.impl;
 
 import com.example.AAD.Task_IV.dto.ProductDTO;
 import com.example.AAD.Task_IV.entity.Product;
+import com.example.AAD.Task_IV.enumaration.ProductStatus;
 import com.example.AAD.Task_IV.repository.ProductRepository;
 import com.example.AAD.Task_IV.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
             product.setDescription(productDTO.getDescription());
             product.setPrice(productDTO.getPrice());
             product.setQuantity(productDTO.getQuantity());
-            product.setStatus(productDTO.getStatus() != null ? productDTO.getStatus() : "ACTIVE");
+            product.setStatus(productDTO.getStatus() != null ? productDTO.getStatus() : ProductStatus.ACTIVE);
 
             productRepository.save(product);
             log.info("Product saved successfully");
@@ -115,9 +116,9 @@ public class ProductServiceImpl implements ProductService {
             }
             // Discontinue rather than hard delete if referenced, or hard delete
             Product product = productOpt.get();
-            product.setStatus("DISCONTINUED");
+            product.setStatus(ProductStatus.INACTIVE);
             productRepository.save(product);
-            log.info("Product marked as DISCONTINUED successfully");
+            log.info("Product marked as INACTIVE successfully");
         } catch (Exception e) {
             log.error("Error deleting product: {}", e.getMessage());
             throw e;
@@ -125,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getProductsByStatus(String status) {
+    public List<ProductDTO> getProductsByStatus(ProductStatus status) {
         log.info("Retrieving products by status: {}", status);
         try {
             List<Product> products = productRepository.findByStatus(status);

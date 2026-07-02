@@ -1,5 +1,6 @@
 package com.example.AAD.Task_IV.dto;
 
+import com.example.AAD.Task_IV.enumaration.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,5 +14,5 @@ public class ProductDTO {
     private String description;
     private double price;
     private int quantity;
-    private String status;
+    private ProductStatus status;
 }

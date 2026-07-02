@@ -2,6 +2,7 @@ package com.example.AAD.Task_IV.controller;
 
 import com.example.AAD.Task_IV.constant.CommonResponse;
 import com.example.AAD.Task_IV.dto.ProductDTO;
+import com.example.AAD.Task_IV.enumaration.ProductStatus;
 import com.example.AAD.Task_IV.service.ProductService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class InventoryClerkController {
 
     @GetMapping(value = "/products/stock", produces = MediaType.APPLICATION_JSON_VALUE)
     public CommonResponse getRealTimeStock() {
-        List<ProductDTO> products = productService.getProductsByStatus("ACTIVE");
+        List<ProductDTO> products = productService.getProductsByStatus(ProductStatus.ACTIVE);
         return new CommonResponse(OPERATION_SUCCESS, products, SUCCESS_MASSAGE);
     }
 

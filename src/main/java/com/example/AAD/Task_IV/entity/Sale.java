@@ -1,5 +1,6 @@
 package com.example.AAD.Task_IV.entity;
 
+import com.example.AAD.Task_IV.enumaration.SalesStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,9 @@ public class Sale {
     private LocalDate saleDate;
     private double discountPercentage;
     private double totalAmount;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private SalesStatus status;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id")

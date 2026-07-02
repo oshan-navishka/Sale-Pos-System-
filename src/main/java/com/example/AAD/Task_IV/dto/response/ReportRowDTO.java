@@ -1,5 +1,6 @@
 package com.example.AAD.Task_IV.dto.response;
 
+import com.example.AAD.Task_IV.enumaration.SalesStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,6 @@ public class ReportRowDTO {
     private LocalDate date;
     private Long orderId;
     private String customer;
-    private String status;
+    private SalesStatus status;
     private double amount;
 }

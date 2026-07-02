@@ -1,5 +1,6 @@
 package com.example.AAD.Task_IV.dto;
 
+import com.example.AAD.Task_IV.enumaration.SalesStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class SaleDTO {
     private LocalDate saleDate;
     private double discountPercentage;
     private double totalAmount;
-    private String status;
+    private SalesStatus status;
     private Long customerId;
     private String customerName;
     private Long cashierId;

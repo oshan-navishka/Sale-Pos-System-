@@ -1,5 +1,6 @@
 package com.example.AAD.Task_IV.entity;
 
+import com.example.AAD.Task_IV.enumaration.ProductStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,9 @@ public class Product {
     private String description;
     private double price;
     private int quantity;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude

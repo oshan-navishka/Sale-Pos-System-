@@ -4,6 +4,8 @@ import com.example.AAD.Task_IV.dto.response.ReportRowDTO;
 import com.example.AAD.Task_IV.dto.SaleDTO;
 import com.example.AAD.Task_IV.dto.SalesItemDTO;
 import com.example.AAD.Task_IV.dto.SalesReportDTO;
+import com.example.AAD.Task_IV.enumaration.ProductStatus;
+import com.example.AAD.Task_IV.enumaration.SalesStatus;
 import com.example.AAD.Task_IV.entity.Customer;
 import com.example.AAD.Task_IV.entity.Product;
 import com.example.AAD.Task_IV.entity.Sale;
@@ -108,7 +110,7 @@ public class SaleServiceImpl implements SaleService {
             sale.setCashier(cashier);
             sale.setCustomer(customer);
             sale.setSaleDate(saleDTO.getSaleDate() != null ? saleDTO.getSaleDate() : LocalDate.now());
-            sale.setStatus(saleDTO.getStatus() != null ? saleDTO.getStatus() : "completed");
+            sale.setStatus(saleDTO.getStatus() != null ? saleDTO.getStatus() : SalesStatus.ACTIVE);
             sale.setDiscountPercentage(saleDTO.getDiscountPercentage());
 
             double subTotal = 0;
@@ -127,17 +129,15 @@ public class SaleServiceImpl implements SaleService {
                 }
                 Product product = productOpt.get();
 
-                if (!"ACTIVE".equalsIgnoreCase(product.getStatus())) {
+                if (product.getStatus() != ProductStatus.ACTIVE) {
                     throw new RuntimeException("Product is discontinued or inactive: " + product.getProductName());
                 }
 
-                // Check real-time stock
                 if (product.getQuantity() < itemDTO.getQuantity()) {
                     throw new RuntimeException("Insufficient stock for product: " + product.getProductName() +
                             ". Available: " + product.getQuantity() + ", Required: " + itemDTO.getQuantity());
                 }
 
-                // Deduct stock immediately
                 product.setQuantity(product.getQuantity() - itemDTO.getQuantity());
                 productRepository.save(product);
 
@@ -145,7 +145,6 @@ public class SaleServiceImpl implements SaleService {
                 item.setSale(sale);
                 item.setProduct(product);
                 item.setQuantity(itemDTO.getQuantity());
-                // Use product price if not provided
                 double price = itemDTO.getPrice() > 0 ? itemDTO.getPrice() : product.getPrice();
                 item.setPrice(price);
 
@@ -155,7 +154,7 @@ public class SaleServiceImpl implements SaleService {
 
             sale.setSalesItems(items);
 
-            // Apply discounts
+            //descount
             double total = subTotal;
             if (sale.getDiscountPercentage() > 0) {
                 total = subTotal * (1.0 - sale.getDiscountPercentage() / 100.0);
@@ -183,7 +182,7 @@ public class SaleServiceImpl implements SaleService {
                 throw new RuntimeException("Sale not found with ID: " + saleId);
             }
             Sale sale = saleOpt.get();
-            if ("cancelled".equalsIgnoreCase(sale.getStatus())) {
+            if (sale.getStatus() == SalesStatus.INACTIVE) {
                 throw new RuntimeException("Cannot apply discount to a cancelled sale");
             }
 
@@ -215,11 +214,10 @@ public class SaleServiceImpl implements SaleService {
                 throw new RuntimeException("Sale not found with ID: " + saleId);
             }
             Sale sale = saleOpt.get();
-            if ("cancelled".equalsIgnoreCase(sale.getStatus())) {
+            if (sale.getStatus() == SalesStatus.INACTIVE) {
                 throw new RuntimeException("Sale is already cancelled");
             }
 
-            // Restore product quantities to stock
             for (SalesItem item : sale.getSalesItems()) {
                 Product product = item.getProduct();
                 if (product != null) {
@@ -228,7 +226,7 @@ public class SaleServiceImpl implements SaleService {
                 }
             }
 
-            sale.setStatus("cancelled");
+            sale.setStatus(SalesStatus.INACTIVE);
             saleRepository.save(sale);
             log.info("Sales transaction ID: {} has been voided/cancelled and stock levels restored", saleId);
         } catch (Exception e) {
@@ -302,7 +300,7 @@ public class SaleServiceImpl implements SaleService {
                 ));
 
                 // Add to total revenue only if NOT cancelled
-                if (!"cancelled".equalsIgnoreCase(sale.getStatus())) {
+                if (sale.getStatus() != SalesStatus.INACTIVE) {
                     totalRevenue += sale.getTotalAmount();
                 }
             }
