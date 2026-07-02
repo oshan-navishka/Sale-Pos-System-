@@ -1,5 +1,6 @@
 package com.example.AAD.Task_IV.dto;
 
+import com.example.AAD.Task_IV.dto.request.ReportRowDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

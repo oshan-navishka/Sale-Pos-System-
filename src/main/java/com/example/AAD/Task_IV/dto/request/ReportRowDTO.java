@@ -1,4 +1,4 @@
-package com.example.AAD.Task_IV.dto;
+package com.example.AAD.Task_IV.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
