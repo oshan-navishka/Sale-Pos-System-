@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
             product.setDescription(productDTO.getDescription());
             product.setPrice(productDTO.getPrice());
             product.setQuantity(productDTO.getQuantity());
-            product.setStatus(productDTO.getStatus() != null ? productDTO.getStatus() : ProductStatus.ACTIVE);
+            product.setStatus(productDTO.getStatus() != null ? productDTO.getStatus() : ProductStatus.AVAILABLE);
 
             productRepository.save(product);
             log.info("Product saved successfully");
@@ -116,9 +116,9 @@ public class ProductServiceImpl implements ProductService {
             }
             // Discontinue rather than hard delete if referenced, or hard delete
             Product product = productOpt.get();
-            product.setStatus(ProductStatus.INACTIVE);
+            product.setStatus(ProductStatus.DISCONTINUED);
             productRepository.save(product);
-            log.info("Product marked as INACTIVE successfully");
+            log.info("Product marked as DISCONTINUED successfully");
         } catch (Exception e) {
             log.error("Error deleting product: {}", e.getMessage());
             throw e;

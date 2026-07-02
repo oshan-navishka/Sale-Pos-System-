@@ -24,7 +24,7 @@ public class InventoryClerkController {
 
     @GetMapping(value = "/products/stock", produces = MediaType.APPLICATION_JSON_VALUE)
     public CommonResponse getRealTimeStock() {
-        List<ProductDTO> products = productService.getProductsByStatus(ProductStatus.ACTIVE);
+        List<ProductDTO> products = productService.getProductsByStatus(ProductStatus.AVAILABLE);
         return new CommonResponse(OPERATION_SUCCESS, products, SUCCESS_MASSAGE);
     }
 

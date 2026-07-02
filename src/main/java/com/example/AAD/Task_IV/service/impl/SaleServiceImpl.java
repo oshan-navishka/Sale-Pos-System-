@@ -110,7 +110,7 @@ public class SaleServiceImpl implements SaleService {
             sale.setCashier(cashier);
             sale.setCustomer(customer);
             sale.setSaleDate(saleDTO.getSaleDate() != null ? saleDTO.getSaleDate() : LocalDate.now());
-            sale.setStatus(saleDTO.getStatus() != null ? saleDTO.getStatus() : SalesStatus.ACTIVE);
+            sale.setStatus(saleDTO.getStatus() != null ? saleDTO.getStatus() : SalesStatus.PENDING);
             sale.setDiscountPercentage(saleDTO.getDiscountPercentage());
 
             double subTotal = 0;
@@ -129,8 +129,8 @@ public class SaleServiceImpl implements SaleService {
                 }
                 Product product = productOpt.get();
 
-                if (product.getStatus() != ProductStatus.ACTIVE) {
-                    throw new RuntimeException("Product is discontinued or inactive: " + product.getProductName());
+                if (product.getStatus() != ProductStatus.AVAILABLE) {
+                    throw new RuntimeException("Product is not available: " + product.getProductName());
                 }
 
                 if (product.getQuantity() < itemDTO.getQuantity()) {
@@ -182,7 +182,7 @@ public class SaleServiceImpl implements SaleService {
                 throw new RuntimeException("Sale not found with ID: " + saleId);
             }
             Sale sale = saleOpt.get();
-            if (sale.getStatus() == SalesStatus.INACTIVE) {
+            if (sale.getStatus() == SalesStatus.CANCELLED) {
                 throw new RuntimeException("Cannot apply discount to a cancelled sale");
             }
 
@@ -214,7 +214,7 @@ public class SaleServiceImpl implements SaleService {
                 throw new RuntimeException("Sale not found with ID: " + saleId);
             }
             Sale sale = saleOpt.get();
-            if (sale.getStatus() == SalesStatus.INACTIVE) {
+            if (sale.getStatus() == SalesStatus.CANCELLED) {
                 throw new RuntimeException("Sale is already cancelled");
             }
 
@@ -226,7 +226,7 @@ public class SaleServiceImpl implements SaleService {
                 }
             }
 
-            sale.setStatus(SalesStatus.INACTIVE);
+            sale.setStatus(SalesStatus.CANCELLED);
             saleRepository.save(sale);
             log.info("Sales transaction ID: {} has been voided/cancelled and stock levels restored", saleId);
         } catch (Exception e) {
@@ -300,7 +300,7 @@ public class SaleServiceImpl implements SaleService {
                 ));
 
                 // Add to total revenue only if NOT cancelled
-                if (sale.getStatus() != SalesStatus.INACTIVE) {
+                if (sale.getStatus() != SalesStatus.CANCELLED) {
                     totalRevenue += sale.getTotalAmount();
                 }
             }
