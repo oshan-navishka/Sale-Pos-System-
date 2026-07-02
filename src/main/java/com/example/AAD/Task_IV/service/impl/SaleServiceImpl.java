@@ -1,6 +1,6 @@
 package com.example.AAD.Task_IV.service.impl;
 
-import com.example.AAD.Task_IV.dto.request.ReportRowDTO;
+import com.example.AAD.Task_IV.dto.response.ReportRowDTO;
 import com.example.AAD.Task_IV.dto.SaleDTO;
 import com.example.AAD.Task_IV.dto.SalesItemDTO;
 import com.example.AAD.Task_IV.dto.SalesReportDTO;
